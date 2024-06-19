@@ -30,6 +30,10 @@ class Cache:
         if self._redis.get(key):
             value = self._redis.get(key)
             if fn:
+                try:
+                    result = self.get_int(value)
+                except ValueError:
+                    result
                 return fn(value)
             return value
 
