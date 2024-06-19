@@ -11,13 +11,14 @@ class Cache:
     and flush the instance using flushdb
     """
     def __init__(self) -> None:
-        self.__redis = redis.Redis()
-        self.__redis.flushdb()
+        """initialize the instance database and flush"""
+        self._redis = redis.Redis()
+        self._redis.flushdb()
 
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """store the input data in Redis using the random key
         and return the key
         """
         key = str(uuid.uuid4())
-        self.__redis.set(key, data)
+        self._redis.set(key, data)
         return key
