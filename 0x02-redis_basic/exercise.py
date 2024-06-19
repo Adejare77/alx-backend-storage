@@ -41,6 +41,6 @@ class Cache:
         """parametrize Cache.get to int data type"""
         value = self._redis.get(key).decode('utf-8')
         try:
-            return eval(value)
-        except NameError:
+            return int(value)
+        except ValueError:
             return 0
