@@ -82,3 +82,20 @@ class Cache:
         """parametrize Cache.get to int data type"""
         value = key.decode('utf-8')
         return int(value)
+
+
+def replay(method: Callable) -> None:
+    """Display the history of calls of a particular function."""
+    redis_client = method.__self__._redis
+    inputs_key = method.__qualname__ + ":inputs"
+    outputs_key = method.__qualname__ + ":outputs"
+
+    inputs = redis_client.lrange(inputs_key, 0, -1)
+    outputs = redis_client.lrange(outputs_key, 0, -1)
+
+    call_count = len(inputs)
+    print(f"{method.__qualname__} was called {call_count} times:")
+    for input_args, output in zip(inputs, outputs):
+        print("{}(*{}) -> {}".format(method.__qualname__,
+                                     input_args.decode('utf-8'),
+                                     output.decode('utf-8')))
