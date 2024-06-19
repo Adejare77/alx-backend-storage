@@ -32,10 +32,12 @@ class Cache:
             if fn:
                 try:
                     result = self.get_int(value)
-                except Exception as e:
-                    result = self.get_str(value)
-                finally:
-                    return result
+                except ValueError as e:
+                    try:
+                        result = self.get_float(value)
+                    except Exception as e:
+                        result = self.get_str(value)
+                return result
             return value
 
     def get_str(self, key):
@@ -46,3 +48,8 @@ class Cache:
         """parametrize Cache.get to int data type"""
         value = key.decode('utf-8')
         return int(value)
+
+    def get_float(self, key):
+        """parametrize Cache.get to float data type"""
+        value = key.decode('utf-8')
+        return float(value)
