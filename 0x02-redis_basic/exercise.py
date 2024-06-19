@@ -10,8 +10,8 @@ from typing import Union, Optional, Callable
 def count_calls(method: Callable) -> Callable:
     """Decorator to count calls to the method."""
     @functools.wraps(method)
-    def wrapper(self, *args, **kwargs):
-        """preserve the original"""
+    def wrapper(self, *args, **kwargs) -> Callable:
+        """preserve the original metadata and return the wrapper"""
         # Generate a custom key
         # key = f"{self.__class__.__name__}.{method.__name__}"
         key = method.__qualname__
@@ -19,6 +19,26 @@ def count_calls(method: Callable) -> Callable:
         self._redis.incr(key)
         return method(self, *args, **kwargs)
     return wrapper
+
+
+def call_history(method: Callable) -> Callable:
+    """Decorator to store the history of inputs and outputs of a method"""
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """preserve the original metadata and return the wrapper"""
+        input_key = f"{self.__class__.__name__}.{method.__name__}:inputs"
+        output_key = method.__qualname__ + ":outputs"
+
+        # store the input arguments
+        self._redis.rpush(input_key, str(args))
+
+        # call the original method and store its output
+        output = method(self, *args, **kwargs)
+        self._redis.rpush(output_key, str(output))
+
+        return str(output)
+    return wrapper
+
 
 
 class Cache:
@@ -30,6 +50,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """store the input data in Redis using the random key
