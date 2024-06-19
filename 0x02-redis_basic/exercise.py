@@ -23,7 +23,7 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-    def get(self, key, fn: Optional[Callable]=None) -> Union[]:
+    def get(self, key, fn: Optional[Callable]=None) -> Union[str, bytes, int, float]:
         """takes a 'key' string argument and an optional Callable argument
         name 'fn'
         """
@@ -32,19 +32,17 @@ class Cache:
             if fn:
                 try:
                     result = self.get_int(value)
-                except ValueError:
-                    result
-                return fn(value)
+                except Exception as e:
+                    result = self.get_str(value)
+                finally:
+                    return result
             return value
 
     def get_str(self, key):
         """parametrize Cache.get to string data type"""
-        return self._redis.get(key).decode('utf-8')
+        return key.decode('utf-8')
 
     def get_int(self, key):
         """parametrize Cache.get to int data type"""
-        value = self._redis.get(key).decode('utf-8')
-        try:
-            return int(value)
-        except ValueError:
-            return 0
+        value = key.decode('utf-8')
+        return int(value)
