@@ -40,7 +40,6 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
-
 class Cache:
     """store an instance of Redis client as private variable named _redis
     and flush the instance using flushdb
