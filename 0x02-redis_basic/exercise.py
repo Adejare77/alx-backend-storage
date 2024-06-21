@@ -67,11 +67,6 @@ class Cache:
         if self._redis.get(key):
             value = self._redis.get(key)
             if fn:
-                # try:
-                #     result = self.get_int(value)
-                # except ValueError as e:
-                #     print("ERROR OCCURED WITH INT")
-                #     result = self.get_str(value)
                 if fn == int:
                     result = self.get_int(value)
                 elif fn == str:
