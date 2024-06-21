@@ -40,7 +40,7 @@ def get_page(url: str) -> str:
 
 
 # Example usage
-if __name__ == "__main__":
-    url = "http://slowwly.robertomurray.co.uk/delay/3000/url/http://www.google.com"
-    print(get_page(url))
-    print(get_page(url))
+# if __name__ == "__main__":
+#     url = "http://slowwly.robertomurray.co.uk/"
+#     print(get_page(url))
+#     print(get_page(url))
