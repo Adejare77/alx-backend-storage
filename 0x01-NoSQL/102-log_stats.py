@@ -49,6 +49,7 @@ def log_stats(log_collection):
     for ip in result:
         print(f'\t{ip["_id"]}: {ip["count"]}')
 
+
 if __name__ == '__main__':
     client = MongoClient('mongodb://localhost:27017')
     nginx_collection = client.logs.nginx
